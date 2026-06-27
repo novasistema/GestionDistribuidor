@@ -1,0 +1,114 @@
+{
+  "entities": {
+    "vendedores": {
+      "title": "Vendedor",
+      "description": "Un vendedor registrado en el sistema que puede realizar ventas y tiene stock asignado.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único del vendedor (UID de Firebase o generado)" },
+        "nombre": { "type": "string", "description": "Nombre completo del vendedor" },
+        "telefono": { "type": "string", "description": "Teléfono de WhatsApp del vendedor" },
+        "activo": { "type": "boolean", "description": "Si el vendedor sigue activo en el sistema" }
+      },
+      "required": ["id", "nombre", "telefono", "activo"]
+    },
+    "clientes": {
+      "title": "Cliente",
+      "description": "Cliente del distribuidor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID del cliente" },
+        "nombre": { "type": "string", "description": "Nombre de la empresa o persona" },
+        "telefono": { "type": "string", "description": "Teléfono de contacto para envío de WhatsApp" },
+        "direccion": { "type": "string", "description": "Dirección física del cliente" },
+        "listaPrecioId": { "type": "string", "description": "ID de la de lista de precios asignada" }
+      },
+      "required": ["id", "nombre", "telefono", "direccion", "listaPrecioId"]
+    },
+    "productos": {
+      "title": "Producto",
+      "description": "Producto del catálogo con seguimiento de stock por vendedor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único del producto" },
+        "nombre": { "type": "string", "description": "Nombre del producto" },
+        "codigo": { "type": "string", "description": "Código de barras o SKU" },
+        "precioBase": { "type": "number", "description": "Precio base sin descuentos" },
+        "stockPorVendedor": { "type": "object", "description": "Mapa de stock por vendedor ID { [vendedorId]: stock }" },
+        "stockTotal": { "type": "number", "description": "Stock total consolidado" }
+      },
+      "required": ["id", "nombre", "codigo", "precioBase", "stockPorVendedor", "stockTotal"]
+    },
+    "listasPrecio": {
+      "title": "Lista de Precios",
+      "description": "Configuraciones de descuento aplicadas a productos basadas en descuento porcentual.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID de la lista de precios" },
+        "nombre": { "type": "string", "description": "Nombre de la lista (ej: Minorista, Mayorista, VIP)" },
+        "descuentoPorcentaje": { "type": "number", "description": "Descuento en porcentaje a restar del precio base" }
+      },
+      "required": ["id", "nombre", "descuentoPorcentaje"]
+    },
+    "ventas": {
+      "title": "Venta",
+      "description": "Registro de una venta efectuada por un vendedor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único de transacción" },
+        "numeroComprobante": { "type": "string", "description": "Número de comprobante secuencial" },
+        "fecha": { "type": "string", "format": "date-time", "description": "Fecha y hora de la venta" },
+        "vendedorId": { "type": "string", "description": "ID del vendedor" },
+        "vendedorNombre": { "type": "string", "description": "Nombre del vendedor" },
+        "clienteId": { "type": "string", "description": "ID del cliente" },
+        "clienteNombre": { "type": "string", "description": "Nombre del cliente" },
+        "total": { "type": "number", "description": "Total final de la venta" },
+        "dineroArreglado": { "type": "boolean", "description": "Si el dinero cobrado ya fue liquidado/arreglado con el administrador" },
+        "articulos": { "type": "array", "description": "Lista de ítems vendidos" }
+      },
+      "required": ["id", "numeroComprobante", "fecha", "vendedorId", "vendedorNombre", "clienteId", "clienteNombre", "total", "dineroArreglado", "articulos"]
+    },
+    "tareas": {
+      "title": "Tarea",
+      "description": "Tareas y recordatorios asignados a vendedores.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID de la tarea" },
+        "titulo": { "type": "string", "description": "Título de la tarea" },
+        "descripcion": { "type": "string", "description": "Descripción detallada" },
+        "fechaLimite": { "type": "string", "format": "date", "description": "Fecha límite para completar" },
+        "asignadoA": { "type": "string", "description": "Asignado a un vendedorId o 'todos' para todos" },
+        "completada": { "type": "boolean", "description": "Estado de completado" },
+        "creadaPor": { "type": "string", "description": "Nombre de quien creó la tarea" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Fecha de creación" }
+      },
+      "required": ["id", "titulo", "descripcion", "fechaLimite", "asignadoA", "completada", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/vendedores/{vendedorId}": {
+      "schema": { "$ref": "vendedores" },
+      "description": "Colección de vendedores en el sistema."
+    },
+    "/clientes/{clienteId}": {
+      "schema": { "$ref": "clientes" },
+      "description": "Colección de clientes en el sistema."
+    },
+    "/productos/{productoId}": {
+      "schema": { "$ref": "productos" },
+      "description": "Catálogo unificado de productos con stock distribuido."
+    },
+    "/listasPrecio/{listaId}": {
+      "schema": { "$ref": "listasPrecio" },
+      "description": "Listas de precios basadas en descuento."
+    },
+    "/ventas/{ventaId}": {
+      "schema": { "$ref": "ventas" },
+      "description": "Registro de ventas de los vendedores."
+    },
+    "/tareas/{tareaId}": {
+      "schema": { "$ref": "tareas" },
+      "description": "Tareas y recordatorios generales y específicos."
+    }
+  }
+}

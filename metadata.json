@@ -1,0 +1,6 @@
+{
+  "name": "Distribuidor de Productos Móvil",
+  "description": "Aplicación móvil para administración de distribuidores de productos, vendedores, listas de descuento, facturación digital en PDF y bloqueo por suscripción.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

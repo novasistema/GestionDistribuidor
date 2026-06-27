@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net - Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 2. Vendedores rules
+    match /vendedores/{vendedorId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(vendedorId);
+    }
+
+    // 3. Clientes rules
+    match /clientes/{clienteId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(clienteId);
+    }
+
+    // 4. Productos rules
+    match /productos/{productoId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(productoId);
+    }
+
+    // 5. ListasPrecio rules
+    match /listasPrecio/{listaId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(listaId);
+    }
+
+    // 6. Ventas rules
+    match /ventas/{ventaId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(ventaId);
+    }
+
+    // 7. Tareas rules
+    match /tareas/{tareaId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(tareaId);
+    }
+
+    // 8. Config Empresa rules
+    match /config_empresa/{configId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(configId);
+    }
+  }
+}
